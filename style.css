@@ -1,0 +1,54 @@
+*{
+    margin:0;
+}
+
+body{
+    background-color: rgb(243, 243, 233);
+}
+
+.header{
+    position: sticky;
+    background-color: rgb(31, 31, 53);
+    height: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    z-index: 2;
+}
+.header a{
+    text-decoration: none;
+    color: #fff;
+}
+.navigation{
+    display: flex;
+    gap:15px;
+}
+
+.add_product{
+    background-color: #fff;
+    width: 50%;
+    padding: 20px;
+    margin: 50px auto;
+
+}
+
+.add_product form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+}
+
+.input{
+    padding: 10px;
+    height: 40px;
+    border:none;
+    background-color: aliceblue;
+}
+
+.btn{
+    height: 40px;
+    background-color: rgb(40, 156, 202);
+    color:#fff;
+}
