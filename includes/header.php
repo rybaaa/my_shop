@@ -4,7 +4,7 @@
         <nav class="navigation">
             <a href="add_product.php">ADD PRODUCT</a>
             <a href="all_products.php">ALL PRODUCTS</a>
-            <a href="my_cart.php">MY ORDERS</a>
+            <a href="my_orders.php">MY ORDERS</a>
             <a href="my_cart.php">CART
                 <?php
                 $count_cart_items = $connection->prepare("SELECT * FROM `cart`
