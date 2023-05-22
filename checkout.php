@@ -57,6 +57,7 @@ if (isset($_POST['place_order'])) {
                 echo '<script type="text/javascript">';
                 echo 'alert("Order placed!");';
                 echo '</script>';
+                header('location:orders.php');
             }
 
         } else {
@@ -66,45 +67,9 @@ if (isset($_POST['place_order'])) {
         }
     } elseif ($verify_cart->rowCount() > 0) {
         while ($f_cart = $verify_cart->fetch(PDO::FETCH_ASSOC)) {
-            $get_price = $connection->prepare("SELECT * FROM `products 
-            WHERE id = ?");
-            $get_price->execute([$f_cart['product_id']]);
-            if ($get_price->rowCount() > 0) {
-                while ($f_price = $get_price->fetch(PDO::FETCH_ASSOC)) {
-                    $insert_order = $connection->prepare("INSERT INTO `orders`(`id`, `user_id`, `name`, `email`, `number`,
-                    `address`, `address_type`, `method`, `product_id`, `price`, `qty`)
-                    VALUES (?,?,?,?,?,?,?,?,?,?,?)");
-                    $insert_order->execute([
-                        uniqid(),
-                        $user_id,
-                        $name,
-                        $email,
-                        $number,
-                        $address,
-                        $address_type,
-                        $payment,
-                        $f_cart['id'],
-                        $f_price['price'],
-                        $f_cart['qty'],
-                    ]);
-                    echo '<script type="text/javascript">';
-                    echo 'alert("Order placed!");';
-                    echo '</script>';
-                }
-                if ($insert_order) {
-                    $empty_cart = $connection->prepare("DELETE FROM `cart`
-                    WHERE user_id = ?");
-                    $empty_cart->execute([$user_id]);
-                }
-
-            } else {
-                echo '<script type="text/javascript">';
-                echo 'alert("Something went wrong!");';
-                echo '</script>';
-            }
             $insert_order = $connection->prepare("INSERT INTO `orders`(`id`, `user_id`, `name`, `email`, `number`,
-            `address`, `address_type`, `method`, `product_id`, `price`, `qty`)
-            VALUES (?,?,?,?,?,?,?,?,?,?,?)");
+             `address`, `address_type`, `method`, `product_id`, `price`, `qty`)
+             VALUES (?,?,?,?,?,?,?,?,?,?,?)");
             $insert_order->execute([
                 uniqid(),
                 $user_id,
@@ -114,13 +79,15 @@ if (isset($_POST['place_order'])) {
                 $address,
                 $address_type,
                 $payment,
-                $fetch_p['id'],
-                $fetch_p['price'],
-                1
+                $f_cart['product_id'],
+                $f_cart['price'],
+                $f_cart['qty'],
             ]);
-            echo '<script type="text/javascript">';
-            echo 'alert("Order placed!");';
-            echo '</script>';
+        }
+        if ($insert_order) {
+            $empty_cart = $connection->prepare("DELETE FROM `cart`
+            WHERE user_id = ?");
+            $empty_cart->execute([$user_id]);
         }
     } else {
         echo '<script type="text/javascript">';
@@ -147,11 +114,10 @@ if (isset($_POST['place_order'])) {
     ?>
     <section class="checkout">
         <h1>Checkout summary</h1>
-        <div class="row"></div>
-        <form action="" method="POST">
-            <h3>Billing details</h3>
-            <div>
-                <div>
+        <div class="row">
+            <form action="" method="POST" class="form">
+                <h3>Billing details</h3>
+                <div class="form_info">
                     <p>Your name</p>
                     <input type="text" name="name" required maxlength="50" placeholder="Enter your name" class="input">
                     <p>Your email</p>
@@ -171,90 +137,87 @@ if (isset($_POST['place_order'])) {
                         <option value="home">Home</option>
                         <option value="office">Office</option>
                     </select>
-                    <div>
-                        <p>Address line 1</p>
-                        <input type="text" name="street" required maxlength="50" placeholder="E.g. city & street name"
-                            class="input">
-                        <p>Address line 2</p>
-                        <input type="text" name="flat" required maxlength="50" placeholder="E.g. flat № and building №"
-                            class="input">
-                    </div>
+                    <p>Address line 1</p>
+                    <input type="text" name="street" required maxlength="50" placeholder="E.g. city & street name"
+                        class="input">
+                    <p>Address line 2</p>
+                    <input type="text" name="flat" required maxlength="50" placeholder="E.g. flat № and building №"
+                        class="input">
                 </div>
-            </div>
-            <input type="submit" value="Place order" name="place_order" class="btn">
-        </form>
-        <div class="summary">
-            <h3>Total items</h3>
-            <?php
-            $grand_total = 0;
-            if ($get_id != '') {
-                $select_product = $connection->prepare("SELECT * FROM `products`
+                <input type="submit" value="Place order" name="place_order" class="btn">
+            </form>
+            <div class="summary">
+                <h3>Total items</h3>
+                <?php
+                $grand_total = 0;
+                if ($get_id != '') {
+                    $select_product = $connection->prepare("SELECT * FROM `products`
                 WHERE id = ?");
-                $select_product->execute([$get_id]);
-                if ($select_product->rowCount() > 0) {
-                    while ($fetch_product = $select_product->fetch(PDO::FETCH_ASSOC)) {
-                        $grand_total = $fetch_product['price'];
-                        ?>
-                        <div>
-                            <img src="uploaded_files/<?= $fetch_product['image'] ?>" alt="product" class="image">
-                            <div>
-                                <h3>
-                                    <?= $fetch_product['name'] ?>
-                                </h3>
-                                <p class="price">
-                                    <?= $fetch_product['price'] . "$" ?>
-                                </p>
-                            </div>
-                        </div>
-                        <?php
-                    }
-                } else {
-                    echo '<p class="empty">Product was not found</p>';
-                }
-            } else {
-                $select_cart = $connection->prepare("SELECT * FROM `cart`
-                    WHERE user_id = ?");
-                $select_cart->execute([$user_id]);
-                if ($select_cart->rowCount() > 0) {
-                    while ($fetch_cart = $select_cart->fetch(PDO::FETCH_ASSOC)) {
-
-                        $select_p = $connection->prepare("SELECT * FROM `products`
-                            WHERE id = ?");
-                        $select_p->execute([$fetch_cart['product_id']]);
-                        if ($select_p->rowCount() > 0) {
-                            while ($f_product = $select_p->fetch(PDO::FETCH_ASSOC)) {
-                                $sub_total = $f_product['price'] * $fetch_cart['qty'];
-                                $grand_total += $sub_total;
-
-
-                                ?>
-                                <div>
-                                    <img src="uploaded_files/<?= $f_product['image'] ?>" alt="product" class="image">
-                                    <div>
-                                        <h3>
-                                            <?= $f_product['name'] ?>
-                                        </h3>
-                                        <p class="price">
-                                            <?= $f_product['price'] . "$" . "x" . $fetch_cart['qty'] ?>
-                                        </p>
-                                    </div>
+                    $select_product->execute([$get_id]);
+                    if ($select_product->rowCount() > 0) {
+                        while ($fetch_product = $select_product->fetch(PDO::FETCH_ASSOC)) {
+                            $grand_total = $fetch_product['price'];
+                            ?>
+                            <div class="summary_item">
+                                <img src="uploaded_files/<?= $fetch_product['image'] ?>" alt="product" class="image_checkout">
+                                <div class="summary_item_info">
+                                    <h3>
+                                        <?= $fetch_product['name'] ?>
+                                    </h3>
+                                    <p class="price">
+                                        <?= $fetch_product['price'] . "$" ?>
+                                    </p>
                                 </div>
-                                <?php
-                            }
-                        } else {
-                            echo '<p class="empty">Product was not found</p>';
+                            </div>
+                            <?php
                         }
+                    } else {
+                        echo '<p class="empty">Product was not found</p>';
                     }
                 } else {
-                    echo '<p class="empty">Your cart is empty</p>';
-                }
-            }
+                    $select_cart = $connection->prepare("SELECT * FROM `cart`
+                    WHERE user_id = ?");
+                    $select_cart->execute([$user_id]);
+                    if ($select_cart->rowCount() > 0) {
+                        while ($fetch_cart = $select_cart->fetch(PDO::FETCH_ASSOC)) {
 
-            ?>
-            <p>Total:
-                <?= $grand_total ?>
-            </p>
+                            $select_p = $connection->prepare("SELECT * FROM `products`
+                            WHERE id = ?");
+                            $select_p->execute([$fetch_cart['product_id']]);
+                            if ($select_p->rowCount() > 0) {
+                                while ($f_product = $select_p->fetch(PDO::FETCH_ASSOC)) {
+                                    $sub_total = $f_product['price'] * $fetch_cart['qty'];
+                                    $grand_total += $sub_total;
+                                    ?>
+                                    <div class="summary_item">
+                                        <img src="uploaded_files/<?= $f_product['image'] ?>" alt="product" class="image_checkout">
+                                        <div class="summary_item_info">
+                                            <h3>
+                                                <?= $f_product['name'] ?>
+                                            </h3>
+                                            <p class="price">
+                                                <?= $f_product['price'] . "$" . "x" . $fetch_cart['qty'] ?>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <?php
+                                }
+                            } else {
+                                echo '<p class="empty">Product was not found</p>';
+                            }
+                        }
+                    } else {
+                        echo '<p class="empty">Your cart is empty</p>';
+                    }
+                }
+
+                ?>
+                <p class="total_sum">Total:
+                    <?= $grand_total ?>
+                </p>
+            </div>
         </div>
+
     </section>
     <script src="script.js"></script>
 </body>

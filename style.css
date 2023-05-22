@@ -1,5 +1,6 @@
 *{
     margin:0;
+    box-sizing: border-box;
 }
 
 body{
@@ -56,6 +57,7 @@ body{
     height: 40px;
     border:none;
     background-color: aliceblue;
+    outline: none;
 }
 
 .btn{
@@ -82,6 +84,12 @@ body{
     align-items: center;
     width: 70%;
     margin: 20px auto;
+}
+
+@media only screen and (max-width:550px) {
+    .products{
+    width: 90%;
+    }
 }
 
 .products>h1{
@@ -168,7 +176,104 @@ body{
     box-shadow: 2px 2px 2px 2px grey;
 }
 
+@media only screen and (max-width:550px) {
+    .additional_info{
+    width: 100%;
+    }
+}
+
+
 .empty{
     font-size: 36px;
     color:red;
+}
+
+/*checkout*/
+
+.checkout{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px;
+    gap: 30px;
+    padding: 20px;
+}
+
+.row{
+    display: flex;
+    gap:30px;
+    flex-wrap: wrap;
+}
+
+@media only screen and (max-width:1009px) {
+    .row{
+    flex-direction: column-reverse;
+    justify-content:center;
+    align-items: center;
+    }
+}
+
+.row > .form {
+    background-color: #fff;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 100%;
+    gap: 20px;
+    width: 500px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 2px 2px rgb(196, 189, 192);
+}
+
+@media only screen and (max-width:550px) {
+    .row > .form{
+    width: 80%;
+    }
+}
+
+.form_info{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.summary{
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    gap: 20px;
+    height: 100%;
+    border-radius: 10px;
+    box-shadow: 2px 2px 2px 2px rgb(196, 189, 192);
+    padding: 20px;
+}
+
+@media only screen and (max-width:550px) {
+    .summary{
+    width: 80%;
+    }
+}
+
+.summary_item{
+    display: flex;
+    width: 400px;
+    gap: 20px;
+}
+
+.summary_item_info{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.image_checkout{
+    width: 100px;
+    height: 100px;
+}
+
+.total_sum{
+    font-size: 24px;
+    color:rgb(248, 105, 2);
+    font-weight: bold;
 }
