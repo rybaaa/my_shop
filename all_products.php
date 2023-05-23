@@ -92,8 +92,6 @@ if (isset($_POST['add_to_cart'])) {
             ?>
         </div>
     </section>
-
-    <script src="script.js"></script>
 </body>
 
 </html>

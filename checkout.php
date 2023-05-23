@@ -219,7 +219,6 @@ if (isset($_POST['place_order'])) {
         </div>
 
     </section>
-    <script src="script.js"></script>
 </body>
 
 </html>

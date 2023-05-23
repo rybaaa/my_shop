@@ -149,8 +149,6 @@ if (isset($_POST['empty_cart'])) {
         <?php }
         ?>
     </section>
-
-    <script src="script.js"></script>
 </body>
 
 </html>
