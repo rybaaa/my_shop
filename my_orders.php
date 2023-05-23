@@ -15,7 +15,7 @@ if (isset($_COOKIE['user_id'])) {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Products</title>
+    <title>Orders</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -40,7 +40,7 @@ if (isset($_COOKIE['user_id'])) {
                         while ($fetch_product = $select_products->fetch(PDO::FETCH_ASSOC)) {
                             if ($fetch_order['status'] === "in progress") {
                                 $order_status_class = "order_status_in_progress";
-                            } elseif ($fetch_order['completed'] === "in progress") {
+                            } elseif ($fetch_order['status'] === "in progress") {
                                 $order_status_class = "order_status_completed";
                             } else {
                                 $order_status_class = "order_status_cancelled";
